@@ -8,6 +8,5 @@ class MultiImplementingClass implements ClassInterface, JsonSerializable
 {
     public function jsonSerialize(): mixed
     {
-
     }
 }

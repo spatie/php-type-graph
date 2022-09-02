@@ -2,7 +2,6 @@
 
 namespace Spatie\PhpTypeGraph\Nodes;
 
-use Illuminate\Support\Collection;
 use ReflectionProperty;
 use Spatie\PhpTypeGraph\Collections\PhpAttributesCollection;
 

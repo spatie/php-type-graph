@@ -10,5 +10,4 @@ use Spatie\PhpTypeGraph\ValueObjects\ClassReferences;
  */
 class InvertedClassReferenceMap extends Collection
 {
-
 }

@@ -9,7 +9,6 @@ class TraverseTypeGraphConfiguration
         public bool $includeClassProperties,
         public bool $includeClassChildren,
         public bool $includeClassParents,
-    )
-    {
+    ) {
     }
 }

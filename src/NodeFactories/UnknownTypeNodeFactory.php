@@ -9,8 +9,7 @@ class UnknownTypeNodeFactory
 {
     public function __construct(
         private readonly TypeGraphConfig $config
-    )
-    {
+    ) {
     }
 
     public function create(

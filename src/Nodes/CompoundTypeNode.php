@@ -2,9 +2,8 @@
 
 namespace Spatie\PhpTypeGraph\Nodes;
 
-use Spatie\PhpTypeGraph\Collections\NodesCollection;
-use Illuminate\Support\Collection;
 use ReflectionClass;
+use Spatie\PhpTypeGraph\Collections\NodesCollection;
 use Spatie\PhpTypeGraph\Collections\PhpAttributesCollection;
 
 class CompoundTypeNode extends TypeNode
@@ -41,18 +40,18 @@ class CompoundTypeNode extends TypeNode
     public function getItemsRecursively(): NodesCollection
     {
         return $this->parentNodes->filter(
-            fn(TypeNode $node) => $node instanceof CompoundTypeNode
+            fn (TypeNode $node) => $node instanceof CompoundTypeNode
         )->flatMap(
-            fn(CompoundTypeNode $node) => $node->items
+            fn (CompoundTypeNode $node) => $node->items
         )->merge($this->items);
     }
 
     public function getAttributesRecursively(): PhpAttributesCollection
     {
         return new PhpAttributesCollection($this->parentNodes->filter(
-            fn(TypeNode $node) => $node instanceof CompoundTypeNode
+            fn (TypeNode $node) => $node instanceof CompoundTypeNode
         )->flatMap(
-            fn(CompoundTypeNode $node) => $node->attributes
+            fn (CompoundTypeNode $node) => $node->attributes
         )->merge($this->attributes));
     }
 

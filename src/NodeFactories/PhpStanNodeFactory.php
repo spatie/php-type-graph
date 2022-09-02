@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\CallableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode as PhpStanGenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode as PhpStanIdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode as PhpStanIntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\OffsetAccessTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode as PhpStanTypeNode;
@@ -20,10 +21,8 @@ use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CollectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
 use Spatie\PhpTypeGraph\Nodes\IntersectionTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode as PhpStanIntersectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
-use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
 class PhpStanNodeFactory
 {
@@ -105,7 +104,7 @@ class PhpStanNodeFactory
         }
 
         $genericTypes = array_map(
-            fn(PhpStanTypeNode $type) => $this->create($context, $type),
+            fn (PhpStanTypeNode $type) => $this->create($context, $type),
             $node->genericTypes
         );
 
@@ -134,7 +133,7 @@ class PhpStanNodeFactory
         PhpStanUnionTypeNode $node
     ): ?TypeNode {
         $types = array_map(
-            fn(PhpStanTypeNode $type) => $this->create($context, $type),
+            fn (PhpStanTypeNode $type) => $this->create($context, $type),
             $node->types
         );
 
@@ -150,7 +149,7 @@ class PhpStanNodeFactory
         PhpStanIntersectionTypeNode $node
     ): ?TypeNode {
         $types = array_map(
-            fn(PhpStanTypeNode $type) => $this->create($context, $type),
+            fn (PhpStanTypeNode $type) => $this->create($context, $type),
             $node->types
         );
 

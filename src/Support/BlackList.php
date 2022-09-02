@@ -31,6 +31,6 @@ class BlackList
         'Symfony\Component\PropertyInfo\DependencyInjection\PropertyInfoPass',
         'Symfony\Component\Routing\DependencyInjection\RoutingResolverPass',
         'Symfony\Component\Serializer\DependencyInjection\SerializerPass',
-        'TheIconic\NameParser\Part\NormalisationTest'
+        'TheIconic\NameParser\Part\NormalisationTest',
     ];
 }

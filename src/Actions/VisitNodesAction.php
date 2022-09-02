@@ -2,23 +2,16 @@
 
 namespace Spatie\PhpTypeGraph\Actions;
 
-use App\Context\Order\Events\OrderCheckedOut;
 use Exception;
-use PhpParser\Node;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
 use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
 use Spatie\PhpTypeGraph\Exceptions\NodeTraversalException;
-use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CollectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
-use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
 use Spatie\PhpTypeGraph\Nodes\IntersectionTypeNode;
-use Spatie\PhpTypeGraph\Nodes\ReferenceTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
-use Spatie\PhpTypeGraph\ValueObjects\TraverseTypeGraphConfiguration;
-use Closure;
 use Spatie\PhpTypeGraph\Visitors\TypeNodeVisitor;
 use Throwable;
 
@@ -152,6 +145,7 @@ class VisitNodesAction
 
             if ($visited === null) {
                 unset($nodes[$i]);
+
                 continue;
             }
 

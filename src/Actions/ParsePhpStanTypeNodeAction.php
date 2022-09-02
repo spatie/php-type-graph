@@ -2,16 +2,6 @@
 
 namespace Spatie\PhpTypeGraph\Actions;
 
-use Spatie\PhpTypeGraph\Collections\NodesCollection;
-use Spatie\PhpTypeGraph\NodeFactories\BaseNodeFactory;
-use Spatie\PhpTypeGraph\NodeFactories\NodeFactory;
-use Spatie\PhpTypeGraph\Nodes\ArrayTypeNode;
-use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
-use Spatie\PhpTypeGraph\Nodes\CollectionTypeNode;
-use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
-use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
-use Spatie\PhpTypeGraph\Nodes\TypeNode;
-use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
 use Exception;
 use Illuminate\Support\Enumerable;
 use phpDocumentor\Reflection\Types\Context;
@@ -21,6 +11,13 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode as PhpStanGenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode as PhpStanIdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode as PhpStanTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode as PhpStanUnionTypeNode;
+use Spatie\PhpTypeGraph\Collections\NodesCollection;
+use Spatie\PhpTypeGraph\NodeFactories\NodeFactory;
+use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
+use Spatie\PhpTypeGraph\Nodes\CollectionTypeNode;
+use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
+use Spatie\PhpTypeGraph\Nodes\TypeNode;
+use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
 
 class ParsePhpStanTypeNodeAction
 {
@@ -85,7 +82,7 @@ class ParsePhpStanTypeNodeAction
         }
 
         $genericTypes = array_map(
-            fn(PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
+            fn (PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
             $node->genericTypes
         );
 
@@ -115,7 +112,7 @@ class ParsePhpStanTypeNodeAction
         PhpStanUnionTypeNode $node
     ): ?TypeNode {
         $types = array_map(
-            fn(PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
+            fn (PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
             $node->types
         );
 

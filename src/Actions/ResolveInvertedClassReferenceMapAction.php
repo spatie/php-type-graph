@@ -2,12 +2,10 @@
 
 namespace Spatie\PhpTypeGraph\Actions;
 
-use Composer\Autoload\ClassLoader;
 use League\ConstructFinder\ConstructFinder;
 use Spatie\PhpTypeGraph\Collections\InvertedClassReferenceMap;
 use Spatie\PhpTypeGraph\Support\ReferenceChecker;
 use Spatie\PhpTypeGraph\ValueObjects\ClassReferences;
-use Illuminate\Support\Collection;
 
 class ResolveInvertedClassReferenceMapAction
 {

@@ -12,7 +12,6 @@ use Spatie\PhpTypeGraph\Nodes\NullTypeNode;
 use Spatie\PhpTypeGraph\Nodes\SelfTypeNode;
 use Spatie\PhpTypeGraph\Nodes\StaticTypeNode;
 use Spatie\PhpTypeGraph\Nodes\StringTypeNode;
-use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
 class BaseNodeFactory

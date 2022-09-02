@@ -2,9 +2,7 @@
 
 namespace Spatie\PhpTypeGraph\Support;
 
-use Exception;
 use Throwable;
-use Whoops\Exception\ErrorException;
 
 class ReferenceChecker
 {
@@ -12,16 +10,16 @@ class ReferenceChecker
 
     public static function exists(string $class): bool
     {
-        if(in_array($class, BlackList::$entries)){
+        if (in_array($class, BlackList::$entries)) {
             return false;
         }
 
-        try{
+        try {
             return class_exists($class)
                 || interface_exists($class)
                 || enum_exists($class)
                 || trait_exists($class);
-        } catch (Throwable){
+        } catch (Throwable) {
             return class_exists($class, false)
                 || interface_exists($class, false)
                 || enum_exists($class, false)

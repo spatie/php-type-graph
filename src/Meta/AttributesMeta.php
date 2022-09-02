@@ -6,7 +6,6 @@ class AttributesMeta
 {
     public function __construct(
         public array $attributes,
-    )
-    {
+    ) {
     }
 }

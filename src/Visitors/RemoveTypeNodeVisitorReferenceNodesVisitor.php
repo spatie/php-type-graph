@@ -5,11 +5,9 @@ namespace Spatie\PhpTypeGraph\Visitors;
 use ReflectionClass;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
 use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
-use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
 use Spatie\PhpTypeGraph\Nodes\ReferenceTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Support\ReferenceChecker;
-use Spatie\PhpTypeGraph\Tests\Fakes\AbstractClass;
 
 class RemoveTypeNodeVisitorReferenceNodesVisitor extends AbstractTypeNodeVisitor
 {

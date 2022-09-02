@@ -9,7 +9,6 @@ class ClassReferences
         public array $implementedBy = [],
         public array $extendedBy = [],
         public array $usedBy = [],
-    )
-    {
+    ) {
     }
 }

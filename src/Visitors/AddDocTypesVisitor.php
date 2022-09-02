@@ -2,7 +2,6 @@
 
 namespace Spatie\PhpTypeGraph\Visitors;
 
-use App\Context\Order\Events\OrderCheckedOut;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;

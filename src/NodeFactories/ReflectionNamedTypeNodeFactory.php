@@ -8,9 +8,7 @@ use Spatie\PhpTypeGraph\Collections\NodesCollection;
 use Spatie\PhpTypeGraph\Nodes\ReferenceTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
-use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
 use Spatie\PhpTypeGraph\Support\ReferenceChecker;
-use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
 class ReflectionNamedTypeNodeFactory
 {

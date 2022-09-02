@@ -2,14 +2,11 @@
 
 namespace Spatie\PhpTypeGraph\Nodes;
 
-use ReflectionClass;
-
 class ReferenceTypeNode extends TypeNode
 {
     public function __construct(
         public string $type,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -17,7 +14,7 @@ class ReferenceTypeNode extends TypeNode
     {
         return [
             'kind' => 'reference',
-            'type' => $this->type
+            'type' => $this->type,
         ];
     }
 

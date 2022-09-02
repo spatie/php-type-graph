@@ -10,7 +10,6 @@ class TypeGraphConfig
     public function __construct(
         public NodesCollection $nodes,
         public InvertedClassReferenceMap $classReferences,
-    )
-    {
+    ) {
     }
 }

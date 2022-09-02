@@ -7,7 +7,6 @@ use ReflectionProperty;
 use Spatie\PhpTypeGraph\Collections\PhpAttributesCollection;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
 use Spatie\PhpTypeGraph\ValueObjects\PhpAttribute;
-use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
 class ReflectionPropertyNodeFactory
 {
@@ -32,7 +31,7 @@ class ReflectionPropertyNodeFactory
             $node,
             $property,
             PhpAttributesCollection::create($property->getAttributes())->map(
-                fn(ReflectionAttribute $reflection) => PhpAttribute::fromReflectionAttribute($reflection)
+                fn (ReflectionAttribute $reflection) => PhpAttribute::fromReflectionAttribute($reflection)
             )
         );
     }

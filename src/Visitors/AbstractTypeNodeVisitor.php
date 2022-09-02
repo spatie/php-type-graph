@@ -11,8 +11,7 @@ class AbstractTypeNodeVisitor implements TypeNodeVisitor
 {
     public function __construct(
         protected readonly NodeFactory $nodeFactory,
-    )
-    {
+    ) {
     }
 
     public function beforeTraverse(NodesCollection $nodes)

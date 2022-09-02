@@ -7,7 +7,6 @@ use ReflectionNamedType;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
 use Spatie\PhpTypeGraph\Nodes\IntersectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
-use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
 class ReflectionIntersectionTypeNodeFactory
 {
@@ -22,7 +21,7 @@ class ReflectionIntersectionTypeNodeFactory
     ): IntersectionTypeNode|UnionTypeNode {
         $types = NodesCollection::create($reflection->getTypes())
             ->map(
-                fn(ReflectionNamedType $namedType) => $this->reflectionNamedTypeNodeFactory->create($namedType)
+                fn (ReflectionNamedType $namedType) => $this->reflectionNamedTypeNodeFactory->create($namedType)
             );
 
         $node = new IntersectionTypeNode($types);

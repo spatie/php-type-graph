@@ -3,7 +3,6 @@
 namespace Spatie\PhpTypeGraph\Nodes;
 
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
-use Illuminate\Support\Collection;
 
 class IntersectionTypeNode extends TypeNode
 {

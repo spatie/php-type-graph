@@ -6,8 +6,7 @@ class UnknownTypeNode extends TypeNode
 {
     public function __construct(
         public string $type,
-    )
-    {
+    ) {
         parent::__construct();
     }
 

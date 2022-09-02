@@ -2,11 +2,9 @@
 
 use Spatie\PhpTypeGraph\Actions\GenerateTypeGraphAction;
 use Spatie\PhpTypeGraph\Actions\ResolveInvertedClassReferenceMapAction;
-use Spatie\PhpTypeGraph\Actions\TraverseNodesCollectionAction;
 use Spatie\PhpTypeGraph\Actions\VisitNodesAction;
 use Spatie\PhpTypeGraph\Exceptions\NodeTraversalException;
 use Spatie\PhpTypeGraph\Traversers\AddDocblockTypesTraverser;
-use Spatie\PhpTypeGraph\Traversers\AddReferenceNodesTraverser;
 use Spatie\PhpTypeGraph\Traversers\RemoveReflectionNodesTraverser;
 use Spatie\PhpTypeGraph\Visitors\AddDocTypesVisitor;
 use Spatie\PhpTypeGraph\Visitors\RemoveReflectionVisitorTypeNodeVisitor;
@@ -26,10 +24,9 @@ it('can test', function () {
 //            AddDocblockTypesTraverser::class,
 //            RemoveReflectionNodesTraverser::class,
 //        ]));
-    }catch (NodeTraversalException $exception){
+    } catch (NodeTraversalException $exception) {
         ray($exception);
+
         throw $exception;
     }
-
 });
-

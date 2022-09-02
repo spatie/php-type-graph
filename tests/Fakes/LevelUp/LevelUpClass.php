@@ -7,5 +7,4 @@ use Spatie\PhpTypeGraph\Tests\Fakes\ClassInterface;
 
 class LevelUpClass extends AbstractClass implements ClassInterface
 {
-
 }

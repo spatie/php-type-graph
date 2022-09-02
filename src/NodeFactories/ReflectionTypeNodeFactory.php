@@ -8,7 +8,6 @@ use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
-use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
 class ReflectionTypeNodeFactory
 {
