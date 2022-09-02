@@ -3,9 +3,13 @@
 namespace Spatie\PhpTypeGraph\Actions;
 
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
+use Spatie\PhpTypeGraph\NodeFactories\BaseNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\NodeFactory;
+use Spatie\PhpTypeGraph\Nodes\ArrayTypeNode;
 use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CollectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
+use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
 use Exception;
@@ -20,6 +24,11 @@ use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode as PhpStanUnionTypeNode;
 
 class ParsePhpStanTypeNodeAction
 {
+    public function __construct(
+        private NodeFactory $nodeFactory,
+    ) {
+    }
+
     public function execute(
         NodesCollection $nodes,
         Context $context,
@@ -42,7 +51,7 @@ class ParsePhpStanTypeNodeAction
             $valueTypeNode = $this->resolveTypeNode($nodes, $context, $node->type);
 
             if ($collectionTypeNode === null || $valueTypeNode === null) {
-                return null;
+                return $this->nodeFactory->baseNode()->create('array');
             }
 
             return new CollectionTypeNode(
@@ -55,7 +64,7 @@ class ParsePhpStanTypeNodeAction
         if ($node instanceof PhpStanArrayShapeNode) {
             // TODO
 
-            return null;
+            return $this->nodeFactory->baseNode()->create('array');
         }
 
         throw new Exception('Unknown PHPstan node');
@@ -72,16 +81,16 @@ class ParsePhpStanTypeNodeAction
             || ($collectionNode instanceof CompoundTypeNode) && $collectionNode->parentNodes->has(Enumerable::class);
 
         if (! $isCollection) {
-            return null;
+            return $collectionNode;
         }
 
         $genericTypes = array_map(
-            fn (PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
+            fn(PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
             $node->genericTypes
         );
 
         if (count($genericTypes) !== count(array_filter($genericTypes))) {
-            return null;
+            return $collectionNode;
         }
 
         return match (count($genericTypes)) {
@@ -106,7 +115,7 @@ class ParsePhpStanTypeNodeAction
         PhpStanUnionTypeNode $node
     ): ?TypeNode {
         $types = array_map(
-            fn (PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
+            fn(PhpStanTypeNode $type) => $this->execute($nodes, $context, $type),
             $node->types
         );
 
@@ -118,7 +127,7 @@ class ParsePhpStanTypeNodeAction
         Context $context,
         string $name,
     ): ?TypeNode {
-        return $nodes[$context->getNamespaceAliases()[$name] ?? ltrim($name, '\\')] ?? null;
+        return $nodes[$context->getNamespaceAliases()[$name] ?? ltrim($name, '\\')] ?? $this->nodeFactory->unknownNode()->create($name);
     }
 
     private function resolveDefaultArrayKeyNode(

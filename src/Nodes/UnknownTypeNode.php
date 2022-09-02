@@ -2,7 +2,7 @@
 
 namespace Spatie\PhpTypeGraph\Nodes;
 
-class FailedTypeNode extends TypeNode
+class UnknownTypeNode extends TypeNode
 {
     public function __construct(
         public string $type,

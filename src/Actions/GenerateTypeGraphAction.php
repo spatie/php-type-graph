@@ -4,17 +4,26 @@ namespace Spatie\PhpTypeGraph\Actions;
 
 use Spatie\PhpTypeGraph\Collections\InvertedClassReferenceMap;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
+use Spatie\PhpTypeGraph\NodeFactories\BaseNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\UnknownTypeNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\NodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\ReflectionClassNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\ReflectionIntersectionTypeNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\ReflectionNamedTypeNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\ReflectionPropertyNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\ReflectionTypeNodeFactory;
+use Spatie\PhpTypeGraph\NodeFactories\ReflectionUnionTypeNodeFactory;
 use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
 use Spatie\PhpTypeGraph\Nodes\BoolTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
-use Spatie\PhpTypeGraph\Nodes\FailedTypeNode;
+use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
 use Spatie\PhpTypeGraph\Nodes\FloatTypeNode;
 use Spatie\PhpTypeGraph\Nodes\IntersectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\IntTypeNode;
 use Spatie\PhpTypeGraph\Nodes\MixedTypeNode;
 use Spatie\PhpTypeGraph\Nodes\NullTypeNode;
-use Spatie\PhpTypeGraph\Nodes\ReferenceNode;
+use Spatie\PhpTypeGraph\Nodes\ReferenceTypeNode;
 use Spatie\PhpTypeGraph\Nodes\StringTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
@@ -31,195 +40,53 @@ use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
+use Spatie\PhpTypeGraph\Visitors\RemoveTypeNodeVisitorReferenceNodesVisitor;
+use Spatie\PhpTypeGraph\Visitors\TypeNodeVisitor;
 
 class GenerateTypeGraphAction
 {
     public function __construct(
         private ResolveInvertedClassReferenceMapAction $resolveInvertedClassReferenceMapAction,
-        private TraverseNodesCollectionAction $traverseNodesCollectionAction,
+        private VisitNodesAction $visitNodesAction,
     ) {
     }
 
     public function execute(
-        array $traversers = [],
+        array $directories,
+        array $visitors = [],
     ): NodesCollection {
         $nodes = new NodesCollection();
 
-        /** @var InvertedClassReferenceMap $classReferences */
-        $classReferences = $this->resolveInvertedClassReferenceMapAction->execute();
+        $classReferences = $this->resolveInvertedClassReferenceMapAction->execute($directories);
 
         $config = new TypeGraphConfig(
             $nodes,
             $classReferences,
         );
 
-        $classReferences->map(function (ClassReferences $class) use (&$config) {
+        $factory = new NodeFactory($config);
+
+        $reflectionClassFactory = $factory->reflectionClass();
+        $failedNodeFactory = $factory->unknownNode();
+
+        foreach ($classReferences as $classReference) {
             try {
-                return $this->createNode(
-                    $config,
-                    new ReflectionClass($class->name)
-                );
+                $reflectionClassFactory->create(new ReflectionClass($classReference->name));
             } catch (ReflectionException) {
-                return $this->createFailedTypeNode($config, $class->name);
+                $failedNodeFactory->create($classReference->name);
             }
-        });
+        }
 
-        collect($traversers)
-            ->push(RemoveReferenceNodesTraverser::class)
+        collect($visitors)
+            ->prepend(RemoveTypeNodeVisitorReferenceNodesVisitor::class)
             ->unique()
-            ->map(fn(string $traverserClass) => new $traverserClass)
-            ->each(function (Traverser $traverser) use (&$config) {
-                $traverser->before($config);
-
-                $this->traverseNodesCollectionAction->execute(
-                    $config->nodes,
-                    function (TypeNode $typeNode) use ($traverser, &$config) {
-                        $handled = $traverser->handle($config, $typeNode);
-
-
-                        return $handled;
-                    },
-                    $traverser->types(),
-                    $traverser->traverseClassItems(),
-                    $traverser->traverseClassChildren(),
-                    $traverser->traverseClassParents()
-                );
-
-                $traverser->after($config);
+            ->map(fn(string $visitorClass) => new $visitorClass(
+                $factory,
+            ))
+            ->each(function (TypeNodeVisitor $visitor) use (&$nodes) {
+                $this->visitNodesAction->execute($nodes, $visitor);
             });
 
         return $nodes;
-    }
-
-    private function createNode(
-        TypeGraphConfig $config,
-        ReflectionClass|ReflectionType $reflection,
-    ): TypeNode {
-        if ($reflection instanceof ReflectionNamedType) {
-            $node = match (true) {
-                $reflection->isBuiltin() => $this->createBaseTypeNode($config, $reflection->getName()),
-                class_exists($reflection->getName()) || interface_exists($reflection->getName()) => new ReferenceNode($reflection->getName()),
-                default => throw new Exception("Unknown reflection named type {$reflection}")
-            };
-
-            if ($reflection->allowsNull()) {
-                return new UnionTypeNode(NodesCollection::create([
-                    $this->createBaseTypeNode($config, 'null'),
-                    $node,
-                ]));
-            }
-
-            return $node;
-        }
-
-        if ($reflection instanceof ReflectionUnionType) {
-            $childNodes = NodesCollection::create($reflection->getTypes())
-                ->map(fn(ReflectionNamedType $namedType) => $this->createNode(
-                    $config,
-                    $namedType
-                ))
-                ->flatMap(fn(TypeNode $node) => $node instanceof UnionTypeNode
-                    ? $node->nodes
-                    : [$node]
-                )
-                ->when($reflection->allowsNull(), fn(Collection $childNodes) => $childNodes->add($this->createBaseTypeNode($config, 'null')))
-                ->unique();
-
-            return new UnionTypeNode($childNodes);
-        }
-
-        if ($reflection instanceof ReflectionIntersectionType) {
-            $types = NodesCollection::create($reflection->getTypes())->map(
-                fn(ReflectionNamedType $namedType) => $this->createNode(
-                    $config,
-                    $namedType
-                )
-            );
-
-            $node = new IntersectionTypeNode($types);
-
-            if (! $reflection->allowsNull()) {
-                return $node;
-            }
-
-            return new UnionTypeNode(NodesCollection::create([$this->createBaseTypeNode($config, 'null'), $node]));
-        }
-
-        if ($reflection instanceof ReflectionClass) {
-            if ($config->nodes->has($reflection->name)) {
-                return $config->nodes[$reflection->name];
-            }
-
-            $properties = NodesCollection::create($reflection->getProperties())
-                ->reject(fn(ReflectionProperty $property) => $property->isStatic())
-                ->keyBy(fn(ReflectionProperty $property) => $property->getName())
-                ->map(function (ReflectionProperty $property) use (&$config) {
-                    $node = $property->getType() === null
-                        ? $this->createBaseTypeNode($config, 'mixed')
-                        : $this->createNode(
-                            $config,
-                            $property->getType()
-                        );
-
-                    return new CompoundItemTypeNode($property->name, $node, $property);
-                })
-                ->filter();
-
-            $parentNodes = NodesCollection::create(class_implements($reflection->name))
-                ->merge(class_parents($reflection->name))
-                ->map(fn(string $class) => new ReferenceNode($class))
-                ->unique();
-
-            $childNodes = NodesCollection::create([
-                ...$config->classReferences[$reflection->name]->implementedBy ?? [],
-                ...$config->classReferences[$reflection->name]->extendedBy ?? [],
-            ])
-                ->map(fn(string $class) => new ReferenceNode($class))
-                ->unique();
-
-            $node = new CompoundTypeNode(
-                $reflection->name,
-                $reflection,
-                $properties,
-                $childNodes,
-                $parentNodes
-            );
-
-            return $config->nodes[$reflection->name] = $node;
-        }
-
-        throw new Exception('Unknown branch');
-    }
-
-    private function createBaseTypeNode(
-        TypeGraphConfig $config,
-        string $type,
-    ): BaseTypeNode {
-        if ($config->nodes->has($type)) {
-            return $config->nodes[$type];
-        }
-
-        return $config->nodes[$type] = match ($type) {
-            'string' => new StringTypeNode(),
-            'bool' => new BoolTypeNode(),
-            'int' => new IntTypeNode(),
-            'float' => new FloatTypeNode(),
-            'mixed' => new MixedTypeNode(),
-            'null' => new NullTypeNode(),
-            default => new BaseTypeNode($type),
-        };
-    }
-
-    private function createFailedTypeNode(
-        TypeGraphConfig $config,
-        string $type,
-    ): FailedTypeNode {
-        if ($config->nodes->has($type)) {
-            return $config->nodes[$type];
-        }
-
-        dump($type);
-
-        return $config->nodes[$type] = new FailedTypeNode($type);
     }
 }

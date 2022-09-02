@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 class IntersectionTypeNode extends TypeNode
 {
     /**
-     * @param NodesCollection<TypeNode> $nodes
+     * @param NodesCollection<\Spatie\PhpTypeGraph\Nodes\BaseTypeNode|\Spatie\PhpTypeGraph\Nodes\CompoundTypeNode|CollectionTypeNode|\Spatie\PhpTypeGraph\Nodes\ReferenceTypeNode|\Spatie\PhpTypeGraph\Nodes\UnknownTypeNode> $nodes
      */
     public function __construct(
         public NodesCollection $nodes,

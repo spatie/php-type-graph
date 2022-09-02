@@ -4,7 +4,7 @@ namespace Spatie\PhpTypeGraph\Nodes;
 
 use ReflectionClass;
 
-class ReferenceNode extends TypeNode
+class ReferenceTypeNode extends TypeNode
 {
     public function __construct(
         public string $type,

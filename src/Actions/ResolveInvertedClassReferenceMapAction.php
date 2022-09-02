@@ -2,22 +2,26 @@
 
 namespace Spatie\PhpTypeGraph\Actions;
 
+use Composer\Autoload\ClassLoader;
 use League\ConstructFinder\ConstructFinder;
 use Spatie\PhpTypeGraph\Collections\InvertedClassReferenceMap;
+use Spatie\PhpTypeGraph\Support\ReferenceChecker;
 use Spatie\PhpTypeGraph\ValueObjects\ClassReferences;
 use Illuminate\Support\Collection;
-use Spatie\LaravelAutoDiscoverer\Discover;
 
 class ResolveInvertedClassReferenceMapAction
 {
-    /** @return InvertedClassReferenceMap<string, ClassReferences> */
-    public function execute(): InvertedClassReferenceMap
-    {
-        /** @var InvertedClassReferenceMap<string, ClassReferences> $map */
+    public function execute(
+        array $directories
+    ): InvertedClassReferenceMap {
         $map = new InvertedClassReferenceMap();
 
-        foreach (ConstructFinder::locatedIn(__DIR__.'/../')->findAll() as $construct){
+        foreach (ConstructFinder::locatedIn(...$directories)->findAll() as $construct) {
             $class = $construct->name();
+
+            if (! ReferenceChecker::exists($class)) {
+                continue;
+            }
 
             foreach (class_implements($class) as $interface) {
                 if ($map->has($interface)) {

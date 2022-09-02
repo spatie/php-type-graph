@@ -3,6 +3,8 @@
 
 # Build a graph off all the types within your project
 
+**This project is a work in progress, everything is probably going to change**
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/php-type-graph.svg?style=flat-square)](https://packagist.org/packages/spatie/php-type-graph)
 [![Tests](https://github.com/spatie/php-type-graph/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/spatie/php-type-graph/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/php-type-graph.svg?style=flat-square)](https://packagist.org/packages/spatie/php-type-graph)

@@ -1,12 +1,8 @@
 <?php
 
-namespace Spatie\PhpTypeGraph\Traversers;
+namespace Spatie\PhpTypeGraph\Visitors;
 
-use Spatie\PhpTypeGraph\Actions\ParsePhpStanTypeNodeAction;
-use Spatie\PhpTypeGraph\Collections\NodesCollection;
-use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
-use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
-use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
+use App\Context\Order\Events\OrderCheckedOut;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
@@ -21,44 +17,44 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
+use Spatie\PhpTypeGraph\Collections\NodesCollection;
+use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
+use Spatie\PhpTypeGraph\NodeFactories\PhpStanNodeFactory;
+use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
+use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
+use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Throwable;
 
-class AddDocblockTypesTraverser extends Traverser
+class AddDocTypesVisitor extends AbstractTypeNodeVisitor
 {
-    public function types(): string | array | null
+    private NodesCollection $nodes;
+
+    public function beforeTraverse(NodesCollection $nodes)
     {
-        return CompoundTypeNode::class;
+        $this->nodes = $nodes;
     }
 
-    public function traverseClassChildren(): bool
+    public function leaveNode(TypeNode $node): TypeNode|null|NodeVisitorOperation
     {
-        return false;
-    }
+        if (! $node instanceof CompoundTypeNode) {
+            return null;
+        }
 
-    public function traverseClassParents(): bool
-    {
-        return false;
-    }
-
-    public function handle(
-        TypeGraphConfig $typeGraphConfig,
-        CompoundTypeNode $node,
-    ) {
         $docTags = $this->resolveDocTags($node);
 
         if (count($docTags) === 0) {
-            return $node;
+            return null;
         }
 
         try {
             $contextFactory = new ContextFactory();
             $context = $contextFactory->createFromReflector($node->reflection);
         } catch (Throwable) {
-            return $node;
+            return null;
         }
 
         foreach ($docTags as $docTag) {
-            $this->applyDocTypeToNode($typeGraphConfig->nodes, $node, $docTag, $context);
+            $this->applyDocTypeToNode($node, $docTag, $context);
         }
 
         return $node;
@@ -82,6 +78,10 @@ class AddDocblockTypesTraverser extends Traverser
             /** @var CompoundItemTypeNode $item */
             if ($docNode = $this->parseDoc($item->reflection)) {
                 foreach ($docNode->getVarTagValues() as $docTag) {
+                    if (empty($docTag->variableName)) {
+                        $docTag->variableName = $item->name;
+                    }
+
                     $docTags[] = $docTag;
                 }
             }
@@ -102,9 +102,8 @@ class AddDocblockTypesTraverser extends Traverser
     }
 
     private function applyDocTypeToNode(
-        NodesCollection $nodes,
         CompoundTypeNode $compoundTypeNode,
-        PropertyTagValueNode | ParamTagValueNode | VarTagValueNode $docTagNode,
+        PropertyTagValueNode|ParamTagValueNode|VarTagValueNode $docTagNode,
         Context $context,
     ) {
         $name = match (true) {
@@ -122,18 +121,14 @@ class AddDocblockTypesTraverser extends Traverser
             return;
         }
 
-        $parsedTypeNode = (new ParsePhpStanTypeNodeAction())->execute(
-            $nodes,
-            $context,
-            $docTagNode->type,
-        );
+        $parsedTypeNode = (new PhpStanNodeFactory($this->nodes, $this->nodeFactory))->create($context, $docTagNode->type);
 
         if ($parsedTypeNode !== null) {
             $propertyItemNode->node = $parsedTypeNode;
         }
     }
 
-    private function parseDoc(ReflectionMethod | ReflectionClass | ReflectionProperty $reflection): ?PhpDocNode
+    private function parseDoc(ReflectionMethod|ReflectionClass|ReflectionProperty $reflection): ?PhpDocNode
     {
         $docComment = $reflection->getDocComment();
 
