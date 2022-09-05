@@ -18,6 +18,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
 use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
+use Spatie\PhpTypeGraph\NodeFactories\NodeFactory;
 use Spatie\PhpTypeGraph\NodeFactories\PhpStanNodeFactory;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
@@ -27,6 +28,19 @@ use Throwable;
 class AddDocTypesVisitor extends AbstractTypeNodeVisitor
 {
     private NodesCollection $nodes;
+
+    private PhpDocParser $parser;
+
+    private Lexer $lexer;
+
+    public function __construct(NodeFactory $nodeFactory)
+    {
+        parent::__construct($nodeFactory);
+
+        $constExprParser = new ConstExprParser();
+        $this->parser = new PhpDocParser(new TypeParser($constExprParser), $constExprParser);
+        $this->lexer = new Lexer();
+    }
 
     public function beforeTraverse(NodesCollection $nodes)
     {
@@ -135,10 +149,6 @@ class AddDocTypesVisitor extends AbstractTypeNodeVisitor
             return null;
         }
 
-        $lexer = new Lexer();
-        $constExprParser = new ConstExprParser();
-        $parser = new PhpDocParser(new TypeParser($constExprParser), $constExprParser);
-
-        return $parser->parse(new TokenIterator($lexer->tokenize($docComment)));
+        return $this->parser->parse(new TokenIterator($this->lexer->tokenize($docComment)));
     }
 }

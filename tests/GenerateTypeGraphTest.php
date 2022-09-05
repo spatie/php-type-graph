@@ -17,8 +17,8 @@ it('can test', function () {
 
     try {
         ray($action->execute([__DIR__ . '/Fakes'], [
-//            AddDocTypesVisitor::class,
-//            RemoveReflectionVisitorTypeNodeVisitor::class,
+            AddDocTypesVisitor::class,
+            RemoveReflectionVisitorTypeNodeVisitor::class,
         ]));
 //        ray($action->execute([__DIR__ . '/../vendor/spatie/data-transfer-object'], [
 //            AddDocblockTypesTraverser::class,

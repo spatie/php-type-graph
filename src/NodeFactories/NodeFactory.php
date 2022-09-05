@@ -5,6 +5,7 @@ namespace Spatie\PhpTypeGraph\NodeFactories;
 use ReflectionClass;
 use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
+use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
 use Spatie\PhpTypeGraph\Support\ReferenceChecker;
 use Spatie\PhpTypeGraph\ValueObjects\TypeGraphConfig;
 
@@ -15,13 +16,17 @@ class NodeFactory
     ) {
     }
 
-    public function create(string $type): CompoundTypeNode|BaseTypeNode
+    public function create(string $type): CompoundTypeNode|BaseTypeNode|UnknownTypeNode
     {
+        if ($this->baseNode()->isBaseNodeType($type)) {
+            return $this->baseNode()->create($type);
+        }
+
         if (ReferenceChecker::exists($type)) {
             return $this->reflectionClass()->create(new ReflectionClass($type));
         }
 
-        return $this->baseNode()->create($type);
+        return $this->unknownNode()->create($type);
     }
 
     public function baseNode(): BaseNodeFactory

@@ -28,7 +28,9 @@ class BaseNodeFactory
             return $this->config->nodes[$type];
         }
 
-        return $this->mapping()[$type] ?? new BaseTypeNode($type);
+        $node = $this->mapping()[$type] ?? new BaseTypeNode($type);
+
+        return $this->config->nodes[$type] = $node;
     }
 
     public function isBaseNodeType(string $type): bool
