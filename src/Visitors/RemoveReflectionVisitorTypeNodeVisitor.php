@@ -9,7 +9,7 @@ use Spatie\PhpTypeGraph\Nodes\TypeNode;
 
 class RemoveReflectionVisitorTypeNodeVisitor extends AbstractTypeNodeVisitor
 {
-    public function enterNode(TypeNode $node): TypeNode|null|NodeVisitorOperation
+    public function enterNode(TypeNode $node): TypeNode|null
     {
         if ($node instanceof CompoundItemTypeNode || $node instanceof CompoundTypeNode) {
             $node->reflection = null;

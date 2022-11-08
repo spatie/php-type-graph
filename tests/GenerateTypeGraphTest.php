@@ -1,5 +1,6 @@
 <?php
 
+use Spatie\PhpTypeGraph\Actions\CacheTypeGraphAction;
 use Spatie\PhpTypeGraph\Actions\GenerateTypeGraphAction;
 use Spatie\PhpTypeGraph\Actions\ResolveInvertedClassReferenceMapAction;
 use Spatie\PhpTypeGraph\Actions\VisitNodesAction;
@@ -16,14 +17,12 @@ it('can test', function () {
     );
 
     try {
-        ray($action->execute([__DIR__ . '/Fakes'], [
+        $nodes = $action->execute([__DIR__ . '/../vendor'], [
             AddDocTypesVisitor::class,
             RemoveReflectionVisitorTypeNodeVisitor::class,
-        ]));
-//        ray($action->execute([__DIR__ . '/../vendor/spatie/data-transfer-object'], [
-//            AddDocblockTypesTraverser::class,
-//            RemoveReflectionNodesTraverser::class,
-//        ]));
+        ]);
+
+        (new CacheTypeGraphAction())->execute($nodes);
     } catch (NodeTraversalException $exception) {
         ray($exception);
 

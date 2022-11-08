@@ -19,12 +19,12 @@ class AbstractTypeNodeVisitor implements TypeNodeVisitor
         return null;
     }
 
-    public function enterNode(TypeNode $node): TypeNode|null|NodeVisitorOperation
+    public function enterNode(TypeNode $node): TypeNode|null
     {
         return null;
     }
 
-    public function leaveNode(TypeNode $node): TypeNode|null|NodeVisitorOperation
+    public function leaveNode(TypeNode $node): TypeNode|null
     {
         return null;
     }

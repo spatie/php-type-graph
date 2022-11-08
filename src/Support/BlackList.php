@@ -8,10 +8,13 @@ namespace Spatie\PhpTypeGraph\Support;
 class BlackList
 {
     public static array $entries = [
+        'Algolia\AlgoliaSearch\Cache\FileCacheDriver',
+        'Algolia\AlgoliaSearch\Cache\NullCacheDriver',
         'Aws\Crypto\Polyfill\ByteArray',
         'Aws\Handler\GuzzleV5\GuzzleStream',
         'Aws\Handler\GuzzleV5\PsrStream',
         'Doctrine\Common\Cache\Psr6\CacheItem',
+        'DebugBar\DataFormatter\VarDumper\SeekingData',
         'Google\Auth\Cache\Item',
         'Google\Cloud\Core\Logger\AppEngineFlexFormatter',
         'Google\Cloud\Core\Logger\AppEngineFlexHandler',

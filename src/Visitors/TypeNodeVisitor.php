@@ -13,9 +13,9 @@ interface TypeNodeVisitor
 
     public function beforeTraverse(NodesCollection $nodes);
 
-    public function enterNode(TypeNode $node): TypeNode|null|NodeVisitorOperation;
+    public function enterNode(TypeNode $node): TypeNode|null;
 
-    public function leaveNode(TypeNode $node): TypeNode|null|NodeVisitorOperation;
+    public function leaveNode(TypeNode $node): TypeNode|null;
 
     public function afterTraverse(NodesCollection $nodes);
 }

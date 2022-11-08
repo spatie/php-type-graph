@@ -47,7 +47,7 @@ class AddDocTypesVisitor extends AbstractTypeNodeVisitor
         $this->nodes = $nodes;
     }
 
-    public function leaveNode(TypeNode $node): TypeNode|null|NodeVisitorOperation
+    public function leaveNode(TypeNode $node): TypeNode|null
     {
         if (! $node instanceof CompoundTypeNode) {
             return null;

@@ -85,8 +85,6 @@ class PhpStanNodeFactory
             return null;
         }
 
-        ray($node, $context);
-
         throw new Exception('Unknown PHPstan node');
     }
 

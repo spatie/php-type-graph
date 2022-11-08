@@ -6,7 +6,7 @@ class CollectionTypeNode extends TypeNode
 {
     public function __construct(
         public CompoundTypeNode|ArrayTypeNode|ReferenceTypeNode|UnknownTypeNode $collectionType,
-        public BaseTypeNode|UnionTypeNode $keyType,
+        public BaseTypeNode|UnionTypeNode|UnknownTypeNode $keyType,
         public CompoundTypeNode|UnionTypeNode|IntersectionTypeNode|BaseTypeNode|ReferenceTypeNode|UnknownTypeNode|CollectionTypeNode $valueType,
     ) {
         parent::__construct();
