@@ -2,10 +2,7 @@
 
 namespace Spatie\PhpTypeGraph\Actions;
 
-use Exception;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
-use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
-use Spatie\PhpTypeGraph\Exceptions\NodeTraversalException;
 use Spatie\PhpTypeGraph\Nodes\BaseTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CollectionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
@@ -16,7 +13,6 @@ use Spatie\PhpTypeGraph\Nodes\TypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnionTypeNode;
 use Spatie\PhpTypeGraph\Nodes\UnknownTypeNode;
 use Spatie\PhpTypeGraph\Visitors\TypeNodeVisitor;
-use Throwable;
 
 class VisitNodesAction
 {

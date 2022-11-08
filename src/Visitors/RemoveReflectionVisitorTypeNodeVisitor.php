@@ -2,7 +2,6 @@
 
 namespace Spatie\PhpTypeGraph\Visitors;
 
-use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;
 use Spatie\PhpTypeGraph\Nodes\CompoundTypeNode;
 use Spatie\PhpTypeGraph\Nodes\TypeNode;

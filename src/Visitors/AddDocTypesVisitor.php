@@ -17,7 +17,6 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 use Spatie\PhpTypeGraph\Collections\NodesCollection;
-use Spatie\PhpTypeGraph\Enums\NodeVisitorOperation;
 use Spatie\PhpTypeGraph\NodeFactories\NodeFactory;
 use Spatie\PhpTypeGraph\NodeFactories\PhpStanNodeFactory;
 use Spatie\PhpTypeGraph\Nodes\CompoundItemTypeNode;

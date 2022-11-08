@@ -2,7 +2,6 @@
 
 namespace Spatie\PhpTypeGraph\Tests\Fakes\DocBlocks;
 
-
 use Illuminate\Support\Collection;
 
 /**
@@ -10,5 +9,4 @@ use Illuminate\Support\Collection;
  */
 class GenericCollection extends Collection
 {
-
 }

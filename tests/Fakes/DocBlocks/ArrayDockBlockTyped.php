@@ -17,7 +17,6 @@ class ArrayDockBlockTyped
         public array $b,
         public array $c,
         public array $d,
-    )
-    {
+    ) {
     }
 }
