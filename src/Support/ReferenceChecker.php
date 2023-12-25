@@ -10,7 +10,7 @@ class ReferenceChecker
 
     public static function exists(string $class): bool
     {
-        if (in_array($class, BlackList::$entries)) {
+        if (in_array($class, DenyList::$entries)) {
             return false;
         }
 
