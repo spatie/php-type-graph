@@ -5,7 +5,7 @@ namespace Spatie\PhpTypeGraph\Support;
 /**
  * A list of classes which are incomplete and throw uncatchable errors
  */
-class BlackList
+class DenyList
 {
     public static array $entries = [
         'Algolia\AlgoliaSearch\Cache\FileCacheDriver',
@@ -20,7 +20,7 @@ class BlackList
         'Google\Cloud\Core\Logger\AppEngineFlexHandler',
         'Google\Cloud\Core\Testing\GcTestListener',
         'League\Flysystem\Cached\Storage\Noop',
-        'NunoMaduro\Larastan\ApplicationResolver',
+        'Larastan\Larastan\ApplicationResolver',
         'Psy\Readline\Hoa\FileLink',
         'Psy\Readline\Hoa\FileFinder',
         'Psy\Readline\Hoa\FileLinkRead',
