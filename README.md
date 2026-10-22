@@ -1,6 +1,4 @@
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
-
 # Build a graph off all the types within your project
 
 **This project is a work in progress, everything is probably going to change**
@@ -13,7 +11,7 @@ This is where your description should go. Try and limit it to a paragraph or two
 
 ## Support us
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/php-type-graph.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/php-type-graph)
+[<img src="https://spatie.be/github-ad-image/php-type-graph.jpg" width="419px" />](https://spatie.be/github-ad-click/php-type-graph)
 
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
